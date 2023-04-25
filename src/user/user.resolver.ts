@@ -14,6 +14,7 @@ import { EmailEntity } from '../email/email.entity';
 import { UserId } from './user.interfaces';
 import { UserService } from './user.service';
 import { AddUser, User, UserIdArgs } from './user.types';
+import { BadRequestException } from '@nestjs/common';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -29,7 +30,15 @@ export class UserResolver {
   }
 
   @Mutation(() => ID)
-  addUser(@Args() user: AddUser): Promise<UserId> {
+  async addUser(@Args() user: AddUser): Promise<UserId> {
+    // const existingUser = await this._service.getByName(user.name);
+
+    // if (existingUser && user.birthdate) {
+    //   throw new BadRequestException({
+    //     message: 'La date de naissance ne peut pas être définie dans le future',
+    //   });
+    // }
+
     return this._service.add(user);
   }
 

@@ -169,7 +169,6 @@ describe('Tests e2e', () => {
     describe('[Mutation] addUser', () => {
       it(`[07] Devrait ajouter un utilisateur`, () => {
         const date = new Date(2001, 11, 12).toISOString();
-
         return request(app.getHttpServer())
           .post('/graphql')
           .send({
@@ -181,7 +180,7 @@ describe('Tests e2e', () => {
           });
       });
 
-      it.skip(`[08] Devrait retourner une erreur de validation si le nom n'est pas défini`, () => {
+      it(`[08] Devrait retourner une erreur de validation si le nom n'est pas défini`, () => {
         return request(app.getHttpServer())
           .post('/graphql')
           .send({
