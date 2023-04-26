@@ -334,11 +334,11 @@ describe('Tests e2e', () => {
     });
 
     describe('[Mutation] deleteEmail', () => {
-      it.skip('[18] Devrait supprimer un email', () => {
+      it('[18] Devrait supprimer un email', () => {
         return request(app.getHttpServer())
           .post('/graphql')
           .send({
-            query: `mutation {deleteEmail("${email1}")}`,
+            query: `mutation {deleteEmail(emailId: "${email1.id}")}`,
           })
           .expect(200)
           .expect((res) => {
@@ -346,17 +346,45 @@ describe('Tests e2e', () => {
           });
       });
 
-      it.skip("[19] Devrait retourner une erreur de validation si l'email n'est pas supprimé", () => {
+      it("[19] Devrait retourner une erreur de validation si l'email n'est pas un UUID'", () => {
         return request(app.getHttpServer())
           .post('/graphql')
           .send({
-            query: `mutation {deleteEmail("${email1}")}`,
+            query: `mutation {deleteEmail(emailId: "ehfzfhzfhzufe-565644-fzjefhz")}`,
+          })
+          .expect(200)
+          .expect((res) => {
+            expect(
+              res.body.errors?.[0].extensions?.originalError?.message,
+            ).toContain("L'identifiant de l'email doit être un UUID");
+          });
+      });
+
+      it("[20] Devrait retourner une erreur de validation si l'email n'éxiste pas", () => {
+        return request(app.getHttpServer())
+          .post('/graphql')
+          .send({
+            query: `mutation {deleteEmail(emailId: "1983ee1f-e64e-4dfd-9a28-ee4827d68999")}`,
           })
           .expect(200)
           .expect((res) => {
             expect(
               res.body.errors?.[0].extensions?.originalError?.message,
             ).toContain("L'email n'a pas été trouvé");
+          });
+      });
+
+      it("[21] Devrait retourner une erreur de validation si l'identifiant de l'email n'est pas défini", () => {
+        return request(app.getHttpServer())
+          .post('/graphql')
+          .send({
+            query: `mutation {deleteEmail(emailId: "")}`,
+          })
+          .expect(200)
+          .expect((res) => {
+            expect(
+              res.body.errors?.[0].extensions?.originalError?.message,
+            ).toContain("L'identifiant de l'email doit être défini");
           });
       });
     });

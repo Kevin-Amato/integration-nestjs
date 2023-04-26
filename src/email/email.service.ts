@@ -48,6 +48,7 @@ export class EmailService {
       throw new NotFoundException(`L'email n'a pas été trouvé`);
     }
 
-    await this.emailRepository.delete(id);
+    await this.emailRepository.delete({ id });
+    return id;
   }
 }
