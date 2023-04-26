@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 import { EmailEntity } from './email.entity';
-import { IEmail, EmailId } from './email.interfaces';
+import { IEmail, EmailId, IAddEmail } from './email.interfaces';
 import { IUser } from '../user/user.interfaces';
 import { UserEntity } from '../user/user.entity';
 
@@ -30,6 +30,16 @@ export class EmailService {
    * @returns L'utilisateur correspondant à l'identifiant de l'email ou undefined
    */
   getUserFromEmail(id: EmailId): Promise<IUser> {
-    return this.userRepository.findOneBy({ id: Equal(id) });
+    // return this.userRepository.findOneBy({ id: Equal(id) });
+    return;
+  }
+
+  async add(email: IAddEmail) {
+    const addedEmail = await this.emailRepository.insert({
+      ...email,
+    });
+
+    const emailId = addedEmail.identifiers[0].id;
+    return emailId;
   }
 }

@@ -1,7 +1,7 @@
 import { ArgsType, Field, ID, InputType, ObjectType } from '@nestjs/graphql';
-import { IsOptional } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
 import { Maybe } from 'graphql/jsutils/Maybe';
-import { IEmail, IEmailFilters } from './email.interfaces';
+import { IAddEmail, IEmail, IEmailFilters } from './email.interfaces';
 
 @ObjectType()
 export class UserEmail implements IEmail {
@@ -30,4 +30,14 @@ export class EmailFiltersArgs implements IEmailFilters {
   @IsOptional()
   @Field(() => StringFilters, { nullable: true })
   address?: Maybe<StringFilters>;
+}
+
+@InputType()
+@ArgsType()
+export class AddEmail implements IAddEmail {
+  @IsEmail()
+  @IsNotEmpty({ message: "L'email n'est pas défini" })
+  @MaxLength(50)
+  @Field(() => String)
+  address: string;
 }
