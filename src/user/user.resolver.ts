@@ -14,7 +14,6 @@ import { EmailEntity } from '../email/email.entity';
 import { UserId } from './user.interfaces';
 import { UserService } from './user.service';
 import { AddUser, User, UserIdArgs } from './user.types';
-import { BadRequestException } from '@nestjs/common';
 
 @Resolver(() => User)
 export class UserResolver {

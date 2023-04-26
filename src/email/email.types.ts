@@ -1,5 +1,11 @@
 import { ArgsType, Field, ID, InputType, ObjectType } from '@nestjs/graphql';
-import { IsEmail, IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsUUID,
+  MaxLength,
+} from 'class-validator';
 import { Maybe } from 'graphql/jsutils/Maybe';
 import { IAddEmail, IEmail, IEmailFilters } from './email.interfaces';
 
@@ -40,4 +46,14 @@ export class AddEmail implements IAddEmail {
   @MaxLength(50)
   @Field(() => String)
   address: string;
+}
+
+@ArgsType()
+export class EmailIdArgs {
+  @IsUUID('all', {
+    message: `L'identifiant de l'email doit être un UUID`,
+  })
+  @IsNotEmpty({ message: `L'identifiant de l'email doit être défini` })
+  @Field(() => String)
+  emailId: string;
 }

@@ -8,7 +8,12 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { AddEmail, EmailFiltersArgs, UserEmail } from './email.types';
+import {
+  AddEmail,
+  EmailFiltersArgs,
+  EmailIdArgs,
+  UserEmail,
+} from './email.types';
 import { User } from '../user/user.types';
 import { EmailService } from './email.service';
 import { EmailId } from './email.interfaces';
@@ -36,7 +41,6 @@ export class EmailResolver {
   @ResolveField(() => User, { name: 'user' })
   async getUser(@Parent() parent: UserEmail): Promise<User> {
     // TODO IMPLEMENTATION
-    console.log(parent);
     // Récupérer l'utilisateur à qui appartient l'email
     throw new NotImplementedException();
   }
@@ -44,5 +48,10 @@ export class EmailResolver {
   @Mutation(() => ID)
   async addEmail(@Args() email: AddEmail): Promise<EmailId> {
     return this._service.add(email);
+  }
+
+  @Mutation(() => ID)
+  deleteEmail(@Args() { emailId }: EmailIdArgs) {
+    return this._service.delete(emailId);
   }
 }

@@ -30,7 +30,7 @@ export class EmailService {
    * @returns L'utilisateur correspondant à l'identifiant de l'email ou undefined
    */
   getUserFromEmail(id: EmailId): Promise<IUser> {
-    // return this.userRepository.findOneBy({ id: Equal(id) });
+    // return this.userRepository.findOneBy({ id: in(id) });
     return;
   }
 
@@ -41,5 +41,15 @@ export class EmailService {
 
     const emailId = addedEmail.identifiers[0].id;
     return emailId;
+  }
+
+  async delete(id: EmailId) {
+    const email = await this.emailRepository.findOneBy({ id: Equal(id) });
+
+    if (!email) {
+      throw new NotFoundException(`L'email n'a pas été trouvé`);
+    }
+
+    await this.emailRepository.delete(id);
   }
 }
