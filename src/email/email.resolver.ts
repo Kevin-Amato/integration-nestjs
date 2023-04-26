@@ -10,14 +10,15 @@ import {
 } from '@nestjs/graphql';
 import { EmailFiltersArgs, UserEmail } from './email.types';
 import { User } from '../user/user.types';
+import { EmailService } from './email.service';
 
 @Resolver(() => UserEmail)
 export class EmailResolver {
+  constructor(private readonly _service: EmailService) {}
+
   @Query(() => UserEmail, { name: 'email' })
   getEmail(@Args({ name: 'emailId', type: () => ID }) emailId: string) {
-    // TODO IMPLEMENTATION
-    // Récupérer une adresse email par rapport à son identifiant
-    throw new NotImplementedException();
+    return this._service.get(emailId);
   }
 
   @Query(() => [UserEmail], { name: 'emailsList' })
@@ -27,6 +28,7 @@ export class EmailResolver {
 
     // Je pense qu'on pourrait essayer de refactoriser pour réutiliser
     // la même chose que dans UserResolver pour récupérer les emails
+
     throw new NotImplementedException();
   }
 

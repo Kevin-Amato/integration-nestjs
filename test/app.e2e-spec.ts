@@ -215,7 +215,7 @@ describe('Tests e2e', () => {
 
   describe('EmailResolver', () => {
     describe('[Query] email', () => {
-      it.skip(`[10] Devrait retourner l'email connu en base de données`, () => {
+      it(`[10] Devrait retourner l'email connu en base de données`, () => {
         const { userId, ...email } = email3;
 
         return request(app.getHttpServer())
@@ -253,7 +253,7 @@ describe('Tests e2e', () => {
         return request(app.getHttpServer())
           .post('/graphql')
           .send({
-            query: `{emailsList(address:{equal:"${email1.address}"}){user{id}}}`,
+            query: `{user(address:{equal:"${email1.address}"}){user{id}}}`,
           })
           .expect(200)
           .expect((res) => {
