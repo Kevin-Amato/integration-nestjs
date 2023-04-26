@@ -262,5 +262,103 @@ describe('Tests e2e', () => {
           });
       });
     });
+
+    describe('[Mutation] addEmail', () => {
+      it(`[13] Devrait ajouter un email`, () => {
+        return request(app.getHttpServer())
+          .post('/graphql')
+          .send({
+            query: `mutation {addEmail(address:"test4@upcse-integration.coop", userId: "${knownUserId}")}`,
+          })
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.data.addEmail).toBeDefined();
+          });
+      });
+
+      it(`[14] Devrait retourner une erreur de validation si l'adresse n'est pas défini`, () => {
+        return request(app.getHttpServer())
+          .post('/graphql')
+          .send({
+            query: `mutation {addEmail(address: "", userId: "${knownUserId}")}`,
+          })
+          .expect(200)
+          .expect((res) => {
+            expect(
+              res.body.errors?.[0].extensions?.originalError?.message,
+            ).toContain("L'adresse de l'utilisateur n'est pas défini");
+          });
+      });
+
+      it(`[15] Devrait retourner une erreur de validation si l'identifiant de l'utilisateur n'est pas défini`, () => {
+        return request(app.getHttpServer())
+          .post('/graphql')
+          .send({
+            query: `mutation {addEmail(address: "test4@upcse-integration.coop", userId: "")}`,
+          })
+          .expect(200)
+          .expect((res) => {
+            expect(
+              res.body.errors?.[0].extensions?.originalError?.message,
+            ).toContain("L'identifiant de l'utilisateur n'est pas défini");
+          });
+      });
+
+      it(`[16] Devrait retourner une erreur de validation si l'identifiant de l'utilisateur n'est pas un UUID`, () => {
+        return request(app.getHttpServer())
+          .post('/graphql')
+          .send({
+            query: `mutation {addEmail(address: "test4@upcse-integration.coop", userId: "jenesuispasunUUID")}`,
+          })
+          .expect(200)
+          .expect((res) => {
+            expect(
+              res.body.errors?.[0].extensions?.originalError?.message,
+            ).toContain("L'identifiant de l'utilisateur doit être un UUID");
+          });
+      });
+
+      it(`[17] Devrait retourner une erreur de validation si l'adresse n'est pas une adresse e-mail valide (nooooooooon!)`, () => {
+        return request(app.getHttpServer())
+          .post('/graphql')
+          .send({
+            query: `mutation {addEmail(address: "nvergonnagiveyouup@nevergonnaletyoudown", userId: "${knownUserId}")}`,
+          })
+          .expect(200)
+          .expect((res) => {
+            expect(
+              res.body.errors?.[0].extensions?.originalError?.message,
+            ).toContain("L'adresse n'est pas une adresse email valide");
+          });
+      });
+    });
+
+    describe('[Mutation] deleteEmail', () => {
+      it.skip('[18] Devrait supprimer un email', () => {
+        return request(app.getHttpServer())
+          .post('/graphql')
+          .send({
+            query: `mutation {deleteEmail("${email1}")}`,
+          })
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.data.deleteEmail).toBeDefined();
+          });
+      });
+
+      it.skip("[19] Devrait retourner une erreur de validation si l'email n'est pas supprimé", () => {
+        return request(app.getHttpServer())
+          .post('/graphql')
+          .send({
+            query: `mutation {deleteEmail("${email1}")}`,
+          })
+          .expect(200)
+          .expect((res) => {
+            expect(
+              res.body.errors?.[0].extensions?.originalError?.message,
+            ).toContain("L'email n'a pas été trouvé");
+          });
+      });
+    });
   });
 });

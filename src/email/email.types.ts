@@ -41,11 +41,18 @@ export class EmailFiltersArgs implements IEmailFilters {
 @InputType()
 @ArgsType()
 export class AddEmail implements IAddEmail {
-  @IsEmail()
-  @IsNotEmpty({ message: "L'email n'est pas défini" })
+  @IsEmail({}, { message: "L'adresse n'est pas une adresse email valide" })
+  @IsNotEmpty({ message: "L'adresse de l'utilisateur n'est pas défini" })
   @MaxLength(50)
   @Field(() => String)
   address: string;
+
+  @IsNotEmpty({ message: `L'identifiant de l'utilisateur n'est pas défini` })
+  @IsUUID('all', {
+    message: `L'identifiant de l'utilisateur doit être un UUID`,
+  })
+  @Field(() => String)
+  userId: string;
 }
 
 @ArgsType()

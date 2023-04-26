@@ -35,11 +35,9 @@ export class EmailService {
   }
 
   async add(email: IAddEmail) {
-    const addedEmail = await this.emailRepository.insert({
-      ...email,
-    });
-
+    const addedEmail = await this.emailRepository.insert(email);
     const emailId = addedEmail.identifiers[0].id;
+
     return emailId;
   }
 

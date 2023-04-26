@@ -51,7 +51,7 @@ export class EmailResolver {
   }
 
   @Mutation(() => ID)
-  deleteEmail(@Args() { emailId }: EmailIdArgs) {
+  async deleteEmail(@Args() { emailId }: EmailIdArgs) {
     return this._service.delete(emailId);
   }
 }
