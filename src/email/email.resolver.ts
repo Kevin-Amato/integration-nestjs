@@ -17,10 +17,17 @@ import {
 import { User } from '../user/user.types';
 import { EmailService } from './email.service';
 import { EmailId } from './email.interfaces';
+import { InjectRepository } from '@nestjs/typeorm';
+import { EmailEntity } from './email.entity';
+import { Equal, FindOptionsWhere, In, Repository } from 'typeorm';
 
 @Resolver(() => UserEmail)
 export class EmailResolver {
-  constructor(private readonly _service: EmailService) {}
+  constructor(
+    private readonly _service: EmailService,
+    @InjectRepository(EmailEntity)
+    private readonly emailRepository: Repository<EmailEntity>,
+  ) {}
 
   @Query(() => UserEmail, { name: 'email' })
   getEmail(@Args({ name: 'emailId', type: () => ID }) emailId: string) {
@@ -29,13 +36,22 @@ export class EmailResolver {
 
   @Query(() => [UserEmail], { name: 'emailsList' })
   async getEmails(@Args() filters: EmailFiltersArgs): Promise<UserEmail[]> {
-    // TODO IMPLEMENTATION
-    // Récupérer une liste d'e-mails correspondants à des filtres
+    const where: FindOptionsWhere<EmailEntity> = {};
 
-    // Je pense qu'on pourrait essayer de refactoriser pour réutiliser
-    // la même chose que dans UserResolver pour récupérer les emails
+    if (filters.address) {
+      if (filters.address.equal) {
+        where.address = Equal(filters.address.equal);
+      }
 
-    throw new NotImplementedException();
+      if (filters.address.in?.length > 0) {
+        where.address = In(filters.address.in);
+      }
+    }
+
+    return this.emailRepository.find({
+      where,
+      order: { address: 'asc' },
+    });
   }
 
   @ResolveField(() => User, { name: 'user' })

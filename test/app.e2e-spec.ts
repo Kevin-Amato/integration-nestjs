@@ -232,7 +232,7 @@ describe('Tests e2e', () => {
     });
 
     describe('[Query] emailsList', () => {
-      it.skip(`[11] Devrait retourner les emails correspondants aux filtres`, () => {
+      it(`[11] Devrait retourner les emails correspondants aux filtres`, () => {
         const { userId, ...email } = email2;
 
         return request(app.getHttpServer())
